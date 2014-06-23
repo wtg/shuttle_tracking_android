@@ -50,42 +50,6 @@
             android:name="com.amazon.geo.maps"
             android:required="false" />
 
-        <!-- The following permissions are required to use the Amazon WebView API for devices that support it. -->
-        <uses-library
-            android:name="com.amazon.webview"
-            android:required="false" />
-
-        <service
-            android:name="org.chromium.content.app.SandboxedProcessService0"
-            android:exported="false"
-            android:permission="org.chromium.content_shell.permission.SANDBOX"
-            android:process=":sandboxed_process0" />
-        <service
-            android:name="org.chromium.content.app.SandboxedProcessService1"
-            android:exported="false"
-            android:permission="org.chromium.content_shell.permission.SANDBOX"
-            android:process=":sandboxed_process1" />
-        <service
-            android:name="org.chromium.content.app.SandboxedProcessService2"
-            android:exported="false"
-            android:permission="org.chromium.content_shell.permission.SANDBOX"
-            android:process=":sandboxed_process2" />
-        <service
-            android:name="org.chromium.content.app.SandboxedProcessService3"
-            android:exported="false"
-            android:permission="org.chromium.content_shell.permission.SANDBOX"
-            android:process=":sandboxed_process3" />
-        <service
-            android:name="org.chromium.content.app.SandboxedProcessService4"
-            android:exported="false"
-            android:permission="org.chromium.content_shell.permission.SANDBOX"
-            android:process=":sandboxed_process4" />
-        <service
-            android:name="org.chromium.content.app.SandboxedProcessService5"
-            android:exported="false"
-            android:permission="org.chromium.content_shell.permission.SANDBOX"
-            android:process=":sandboxed_process5" />
-
         <activity
             android:name="edu.rpi.shuttles.TrackingAmazonMapActivity"
             android:hardwareAccelerated="true"
