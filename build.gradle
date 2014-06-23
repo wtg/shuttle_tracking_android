@@ -1,6 +1,8 @@
 apply plugin: 'android'
 
 dependencies {
+    compile 'com.google.code.gson:gson:2.2.+'
+    compile 'com.android.support:support-v4:13.0.+'
     compile fileTree(dir: 'libs', include: '*.jar')
     compile project(':JakeWharton-ActionBarSherlock-5a15d92:actionbarsherlock')
 }
