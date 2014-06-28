@@ -5,12 +5,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 
-import edu.rpi.shuttles.R;
 import edu.rpi.shuttles.data.Coordinate;
 import edu.rpi.shuttles.data.RPIShuttleDataProvider;
 import edu.rpi.shuttles.data.Route;
@@ -28,7 +25,7 @@ import android.util.SparseArray;
  * 
  */
 public class TrackingActivity extends SherlockFragmentActivity {
-	private final CompatibilityHelper compat_helper = new CompatibilityHelper();
+	private final CompatibilityHelper compatibilityHelper = new CompatibilityHelper();
 	private RPIShuttleDataProvider shuttles_service;
 	
 	@Override
@@ -46,12 +43,12 @@ public class TrackingActivity extends SherlockFragmentActivity {
 			}
 			
 			
-			if (compat_helper.hasGooglePlayServices(getApplicationContext())) {
+			if (compatibilityHelper.hasGooglePlayServices(getApplicationContext())) {
 				TrackingGoogleMapFragment mapFragment = new TrackingGoogleMapFragment();
 				getSupportActionBar().setBackgroundDrawable(null);
 				getSupportFragmentManager().beginTransaction()
 					.add(R.id.activity_tracking, mapFragment).commit();
-			} else if (compat_helper.hasAmazonMaps()) {
+			} else if (compatibilityHelper.hasAmazonMaps()) {
 				Intent intent = new Intent(this, TrackingAmazonMapActivity.class);
 				startActivity(intent);
 			} else {
@@ -76,8 +73,7 @@ public class TrackingActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 	    // Inflate the menu items for use in the action bar
-		checkMapsCompatibility();
-		if (mAmazonMapsAvailable) {
+		if (compatibilityHelper.hasAmazonMaps()) {
 			return true;
 		} else {
 			MenuInflater inflater = getSupportMenuInflater();
@@ -88,7 +84,6 @@ public class TrackingActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle presses on the action bar items
-		checkMapsCompatibility();
 		switch (item.getItemId()) {
 		case R.id.action_refresh:
     		AsyncTask<Void, Void, SparseArray<Stop>> stopsTask = shuttles_service.new PopulateStopsTask(this);
@@ -105,7 +100,7 @@ public class TrackingActivity extends SherlockFragmentActivity {
 	protected void onResume() {
 		super.onResume();
 		
-		if (compat_helper.hasGooglePlayServices(getApplicationContext())) 
+		if (compatibilityHelper.hasGooglePlayServices(getApplicationContext()))
 		{
 			shuttles_service = new RPIShuttleDataProvider();
 			final GoogleMap map = ((SupportMapFragment) getSupportFragmentManager()
@@ -124,7 +119,7 @@ public class TrackingActivity extends SherlockFragmentActivity {
 			new Handler().postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					if (compat_helper.hasGooglePlayServices(getApplicationContext())) {
+					if (compatibilityHelper.hasGooglePlayServices(getApplicationContext())) {
 						((TrackingGoogleMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_tracking))
 							.moveCamera(new Coordinate(42.7302712352, -73.6765441399), (float) 15.25);
 					} else {
@@ -136,7 +131,7 @@ public class TrackingActivity extends SherlockFragmentActivity {
 		}
 	}
 	public void updateRoutes(SparseArray<Route> routes) {
-		if (compat_helper.hasGooglePlayServices(getApplicationContext())) {
+		if (compatibilityHelper.hasGooglePlayServices(getApplicationContext())) {
 			((TrackingGoogleMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_tracking))
 				.renderRoutes(routes);
 		} else {
@@ -146,7 +141,7 @@ public class TrackingActivity extends SherlockFragmentActivity {
 	}
 	
 	public void updateStops(SparseArray<Stop> stops) {
-		if (compat_helper.hasGooglePlayServices(getApplicationContext())) {
+		if (compatibilityHelper.hasGooglePlayServices(getApplicationContext())) {
 			((TrackingGoogleMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_tracking))
 				.renderStops(stops);
 		} else {
@@ -156,7 +151,7 @@ public class TrackingActivity extends SherlockFragmentActivity {
 	}
 	
 	public void updateVehicles(SparseArray<Vehicle> vehicles) {
-		if (compat_helper.hasGooglePlayServices(getApplicationContext())) {
+		if (compatibilityHelper.hasGooglePlayServices(getApplicationContext())) {
 			((TrackingGoogleMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_tracking))
 			.renderVehicles(vehicles);
 		}
