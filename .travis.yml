@@ -11,3 +11,5 @@ android:
     - addon-google_apis-google-23
 script:
   - ./gradlew build assembleDebug
+notifications:
+  slack: rcos:WWNMphR4ouhl7e4aI5C10izZ#shuttle-tracking
