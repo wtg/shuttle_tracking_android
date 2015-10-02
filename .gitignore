@@ -5,12 +5,23 @@
 # files for the dex VM
 *.dex
 
+# Gradle files
+.gradle/
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+
 # Java class files
 *.class
 
 # generated files
 bin/
+build/
 gen/
 
 # Local configuration file (sdk path, etc)
 local.properties
+
+# Mac OS X
+.DS_Store
