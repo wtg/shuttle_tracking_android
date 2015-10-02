@@ -1,4 +1,4 @@
-package com.example.gbprz.shuttletracking;
+package edu.rpi.shuttles.android;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
