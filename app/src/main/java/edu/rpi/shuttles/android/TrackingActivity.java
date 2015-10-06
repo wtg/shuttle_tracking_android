@@ -6,6 +6,12 @@ import android.os.Bundle;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 
+import java.util.ArrayList;
+
+import edu.rpi.shuttles.android.models.TrackingApi;
+import edu.rpi.shuttles.android.models.Vehicle;
+import edu.rpi.shuttles.android.models.Route;
+
 public class TrackingActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -37,6 +43,7 @@ public class TrackingActivity extends FragmentActivity {
     }
 
     private void setUpMap() {
-
+        TrackingApi trackingApi = new TrackingApi(getApplicationContext());
+        ArrayList<Vehicle> vehicles = trackingApi.getVehicleUpdates();
     }
 }
