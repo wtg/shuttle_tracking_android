@@ -1,67 +1,61 @@
 package edu.rpi.shuttles.android.models;
 
 import android.content.Context;
+import android.os.Handler;
+import android.util.Log;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.BufferedInputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import edu.rpi.shuttles.android.R;
 
 public class TrackingApi {
 
-    private String updatesUrl;
-    private String routesUrl;
-    private String stopsUrl;
+    private final String TAG = TrackingApi.class.getName();
 
-    public TrackingApi(Context context) {
-        updatesUrl = context.getString(R.string.updates_url);
-        routesUrl = context.getString(R.string.routes_url);
-        stopsUrl = context.getString(R.string.stops_url);
-    }
+    private static String updatesUrl = "http://shuttles.rpi.edu/vehicles/current.js";
+    private static String routesUrl = "http://shuttles.rpi.edu/routes.js";
+    private static String stopsUrl = "http://shuttles.rpi.edu/stops.js";
 
-    public ArrayList<Vehicle> getVehicleUpdates() {
-        JSONObject updatesJson = getUpdates();
-        return null;
-    }
-
-    private JSONObject getUpdates() {
+    public String getUpdates() {
         // Get vehicle tracking updates
         try {
             String updatesData = getData(this.updatesUrl);
-            return new JSONObject(updatesData);
+            return updatesData;
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.v(TAG, e.toString());
         }
-        return null;
+        return "";
     }
 
-    private JSONObject getRoutesUrl() {
+    public String getRoutes() {
         // Get tracking routes
         try {
             String routesData = getData(this.routesUrl);
-            return new JSONObject(routesData);
+            return routesData;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
 
-    private JSONObject getStopsUrl() {
+    public String getStops() {
         // Get route stops
         try {
             String stopsData = getData(this.stopsUrl);
-            return new JSONObject(stopsData);
+            return stopsData;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return "";
     }
 
     private String getData(String urlString) throws Exception {
