@@ -1,5 +1,6 @@
 package edu.rpi.shuttles.android;
 
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
@@ -10,6 +11,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,6 +24,7 @@ import java.util.TimerTask;
 import edu.rpi.shuttles.android.models.TrackingApi;
 import edu.rpi.shuttles.android.models.Vehicle;
 import edu.rpi.shuttles.android.models.Route;
+import edu.rpi.shuttles.android.models.Route.Coord;
 
 public class TrackingActivity extends FragmentActivity {
 
@@ -55,12 +59,12 @@ public class TrackingActivity extends FragmentActivity {
     }
 
     private void setUpMap() {
-        // Check for vehicle updates periodically and update position on map
-        periodicVehicleUpdates();
         // Draw routes on map
         drawRoutes();
         // Place stops on routes
         placeStops();
+        // Check for vehicle updates periodically and update position on map
+        periodicVehicleUpdates();
     }
 
     private void updateShuttlePositions(ArrayList<Vehicle> vehicles) {
@@ -74,7 +78,38 @@ public class TrackingActivity extends FragmentActivity {
     }
 
     private void drawRoutes() {
+        String[] eastCoords = getResources().getStringArray(R.array.east_campus_route);
+        String[] westCoords = getResources().getStringArray(R.array.west_campus_route);
 
+        Route eastCampus = new Route("East Campus", eastCoords);
+        ArrayList<Coord> eastRouteCoords = eastCampus.getRouteCoords();
+
+        Route westCampus = new Route("West Campus", westCoords);
+        ArrayList<Coord> westRouteCoords = westCampus.getRouteCoords();
+
+        double lat, lng;
+        ArrayList<LatLng> eastLatLng = new ArrayList<LatLng>();
+        for (int i = 0; i < eastRouteCoords.size(); i++) {
+            lat = eastRouteCoords.get(i).getLat();
+            lng = eastRouteCoords.get(i).getLng();
+            eastLatLng.add(new LatLng(lat, lng));
+        }
+
+        ArrayList<LatLng> westLatLng = new ArrayList<LatLng>();
+        for (int i = 0; i < westRouteCoords.size(); i++) {
+            lat = westRouteCoords.get(i).getLat();
+            lng = westRouteCoords.get(i).getLng();
+            westLatLng.add(new LatLng(lat, lng));
+        }
+
+        PolylineOptions eastRouteOpts = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true).visible(true);
+        PolylineOptions westRouteOpts = new PolylineOptions().width(5).color(Color.RED).geodesic(true).visible(true);
+
+        eastRouteOpts.addAll(eastLatLng);
+        westRouteOpts.addAll(westLatLng);
+
+        mMap.addPolyline(eastRouteOpts);
+        mMap.addPolyline(westRouteOpts);
     }
 
     private void placeStops() {
