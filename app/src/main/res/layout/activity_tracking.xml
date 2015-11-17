@@ -8,5 +8,5 @@
     android:name="com.google.android.gms.maps.SupportMapFragment"
     map:cameraTargetLat="42.730172"
     map:cameraTargetLng="-73.678803"
-    map:cameraZoom="15"
+    map:cameraZoom="14"
     map:mapType="normal" />
