@@ -2,13 +2,17 @@ package edu.rpi.shuttles.android;
 
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -18,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,12 +65,8 @@ public class TrackingActivity extends FragmentActivity {
     }
 
     private void setUpMap() {
-        // Draw routes on map
-        drawRoutes();
-        // Place stops on routes
-        placeStops();
         // Check for vehicle updates periodically and update position on map
-        periodicVehicleUpdates();
+        periodicMapUpdates();
     }
 
     private void updateShuttlePositions(ArrayList<Vehicle> vehicles) {
@@ -72,8 +74,11 @@ public class TrackingActivity extends FragmentActivity {
         for (int i = 0; i < vehicles.size(); i++) {
             Vehicle v = vehicles.get(i);
             mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(v.lat, v.lng))
-                .title(v.name));
+                    .position(new LatLng(v.lat, v.lng))
+                    .title(v.name)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle))
+                    .anchor((float) 0.5, (float) 0.5)
+                    .rotation(v.heading));
         }
     }
 
@@ -102,8 +107,8 @@ public class TrackingActivity extends FragmentActivity {
             westLatLng.add(new LatLng(lat, lng));
         }
 
-        PolylineOptions eastRouteOpts = new PolylineOptions().width(5).color(Color.BLUE).geodesic(true).visible(true);
-        PolylineOptions westRouteOpts = new PolylineOptions().width(5).color(Color.RED).geodesic(true).visible(true);
+        PolylineOptions eastRouteOpts = new PolylineOptions().width(3).color(Color.BLUE).geodesic(true);
+        PolylineOptions westRouteOpts = new PolylineOptions().width(3).color(Color.RED).geodesic(true);
 
         eastRouteOpts.addAll(eastLatLng);
         westRouteOpts.addAll(westLatLng);
@@ -113,10 +118,20 @@ public class TrackingActivity extends FragmentActivity {
     }
 
     private void placeStops() {
+        String[] stopCoords = getResources().getStringArray(R.array.stops);
 
+        double lat, lng;
+        for (int i = 0; i < stopCoords.length; i++) {
+            List<String> parseLatLng = Arrays.asList(stopCoords[i].split(","));
+            lat = Double.parseDouble(parseLatLng.get(1));
+            lng = Double.parseDouble(parseLatLng.get(0));
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(lat, lng))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.stop_marker)));
+        }
     }
 
-    private void periodicVehicleUpdates() {
+    private void periodicMapUpdates() {
         final Handler updatesHandler = new Handler();
         Timer updatesTimer = new Timer();
 
@@ -125,7 +140,7 @@ public class TrackingActivity extends FragmentActivity {
             public void run() {
                 updatesHandler.post(new Runnable() {
                     public void run() {
-                        new VehicleUpdates().execute();
+                        new MapUpdates().execute();
                     }
                 });
             }
@@ -134,9 +149,9 @@ public class TrackingActivity extends FragmentActivity {
         updatesTimer.schedule(updatesTask, 0, 7000);
     }
 
-    private class VehicleUpdates extends AsyncTask<Void, Void, ArrayList<Vehicle>> {
+    private class MapUpdates extends AsyncTask<Void, Void, ArrayList<Vehicle>> {
 
-        private final String TAG = VehicleUpdates.class.getName();
+        private final String TAG = MapUpdates.class.getName();
 
         protected ArrayList<Vehicle> doInBackground(Void...params) {
             TrackingApi api = new TrackingApi();
@@ -161,6 +176,8 @@ public class TrackingActivity extends FragmentActivity {
 
         protected void onPostExecute(ArrayList<Vehicle> vehicles) {
             updateShuttlePositions(vehicles);
+            drawRoutes();
+            placeStops();
         }
     }
 }
