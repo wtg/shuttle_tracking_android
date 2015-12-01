@@ -6,8 +6,10 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toolbar;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -32,7 +34,7 @@ import edu.rpi.shuttles.android.models.Vehicle;
 import edu.rpi.shuttles.android.models.Route;
 import edu.rpi.shuttles.android.models.Route.Coord;
 
-public class TrackingActivity extends FragmentActivity {
+public class TrackingActivity extends AppCompatActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -78,7 +80,7 @@ public class TrackingActivity extends FragmentActivity {
                     .title(v.name)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle))
                     .anchor((float) 0.5, (float) 0.5)
-                    .rotation(v.heading));
+                    .rotation(v.heading - 90));
         }
     }
 
